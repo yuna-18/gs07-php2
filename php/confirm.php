@@ -1,18 +1,31 @@
 <?php
 require_once('./_funcs.php');
+// 受け取る値が配列以外
 $name = htmlSpChar($_POST['name']);
 $furigana = htmlSpChar($_POST['furigana']);
 $email = htmlSpChar($_POST['email']);
-$categories = htmlSpChar($_POST['categories']);
-$subscribeMail = htmlSpChar($_POST['subscribeMail']);
+$subscribeMail = htmlSpChar($_POST['subscribe-mail']);
 
 
-// session_start();
-// $_SESSION['name'] = $name;
-// $_SESSION['furigana'] = $furigana;
-// $_SESSION['email'] = $email;
-// $_SESSION['categories'] = $categories;
-// $_SESSION['subscribe-mail'] = $subscribeMail;
+session_start();
+$_SESSION['name'] = $name;
+$_SESSION['furigana'] = $furigana;
+$_SESSION['email'] = $email;
+$_SESSION['subscribe-mail'] = $subscribeMail;
+
+// 複数選択　音楽カテゴリ処理
+if (isset($_POST['categories']) && is_array($_POST['categories'])) {
+  // 配列内の値の処理
+  $categories = array_map('htmlspecialchars', $_POST['categories']);
+  
+  // セッションに保存
+  $_SESSION['categories'] = $categories;
+
+  // print_r($_SESSION['categories']);
+} else {
+  // からの配列をセッションに保存
+  $_SESSION['categories'] = [];
+}
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -47,10 +60,10 @@ $subscribeMail = htmlSpChar($_POST['subscribeMail']);
         <div class="confirm__outer">
           <p class="confirm__label">好きな音楽のカテゴリ</p>
           <?php
-          if (!empty($_POST['categories'])) {
+          if (!empty($_SESSION['categories'])) {
             echo '<ul class="confirm__content--list">';
-            foreach ($_POST['categories'] as $category) {
-              echo '<li class="confirm__content">' . htmlspecialchars($category, ENT_QUOTES, 'UTF-8') . '</li>';
+            foreach ($_SESSION['categories'] as $category) {
+              echo '<li class="confirm__content">' . $category . '</li>';
             }
             echo '</ul>';
           } else {
@@ -62,8 +75,8 @@ $subscribeMail = htmlSpChar($_POST['subscribeMail']);
           <p class="confirm__label">メールで演奏会の通知を受け取る</p>
           <p class="confirm__content">
             <?php
-            if (!empty($_POST['subscribe-mail'])) {
-              echo $_POST['subscribe-mail'];
+            if (!empty($_SESSION['subscribe-mail'])) {
+              echo $_SESSION['subscribe-mail'];
               $subscribeMail = "受け取る";
             } else {
               echo "受け取らない";
@@ -76,15 +89,15 @@ $subscribeMail = htmlSpChar($_POST['subscribeMail']);
     </div>
     <form action="./complete.php" method="post">
       <?php
-      echo '<input type="hidden" name="name" id="name" value="' . htmlspecialchars($_POST['name'], ENT_QUOTES, 'UTF-8') . '">';
-      echo '<input type="hidden" name="furigana" id="furigana" value="' . htmlspecialchars($_POST['furigana'], ENT_QUOTES, 'UTF-8') . '">';
-      echo '<input type="hidden" name="email" id="email" value="' . htmlspecialchars($_POST['email'], ENT_QUOTES, 'UTF-8') . '">';
-      if (!empty($_POST['categories'])) {
-        foreach ($_POST['categories'] as $category) {
-          echo '<input type="hidden" name="categories[]" value="' . htmlspecialchars($category, ENT_QUOTES, 'UTF-8') . '">';
+      echo '<input type="hidden" name="name" id="name" value="' . $name . '">';
+      echo '<input type="hidden" name="furigana" id="furigana" value="' . $furigana . '">';
+      echo '<input type="hidden" name="email" id="email" value="' . $email . '">';
+      if (!empty($_SESSION['categories'])) {
+        foreach ($_SESSION['categories'] as $category) {
+          echo '<input type="hidden" name="categories[]" value="' . $category . '">';
         }
       }
-      echo '<input type="hidden" name="subscribe-mail" id="subscribe-mail" value="' . htmlspecialchars($subscribeMail, ENT_QUOTES, 'UTF-8') . '">';
+      echo '<input type="hidden" name="subscribe-mail" id="subscribe-mail" value="' . $subscribeMail . '">';
       ?>
       <div class="btn__container">
         <button type="button" onclick="history.back()" class="back-btn btn">戻る</button>
