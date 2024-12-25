@@ -1,10 +1,26 @@
+<?php
+require_once('./_funcs.php');
+$name = htmlSpChar($_POST['name']);
+$furigana = htmlSpChar($_POST['furigana']);
+$email = htmlSpChar($_POST['email']);
+$categories = htmlSpChar($_POST['categories']);
+$subscribeMail = htmlSpChar($_POST['subscribeMail']);
+
+
+// session_start();
+// $_SESSION['name'] = $name;
+// $_SESSION['furigana'] = $furigana;
+// $_SESSION['email'] = $email;
+// $_SESSION['categories'] = $categories;
+// $_SESSION['subscribe-mail'] = $subscribeMail;
+?>
 <!DOCTYPE html>
 <html lang="ja">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ユーザー登録フォーム</title>
+  <title>登録内容確認</title>
   <link rel="stylesheet" href="../css/reset.css">
   <link rel="stylesheet" href="../css/style.css">
 </head>
@@ -18,15 +34,15 @@
         </div>
         <div class="confirm__outer">
           <p class="confirm__label">氏名</p>
-          <p class="confirm__content"><?= $_POST['name']; ?></p>
+          <p class="confirm__content"><?= $name; ?></p>
         </div>
         <div class="confirm__outer">
           <p class="confirm__label">フリガナ</p>
-          <p class="confirm__content"><?= $_POST['furigana']; ?></p>
+          <p class="confirm__content"><?= $furigana; ?></p>
         </div>
         <div class="confirm__outer">
           <p class="confirm__label">メール</p>
-          <p class="confirm__content"><?= $_POST['email']; ?></p>
+          <p class="confirm__content"><?= $email; ?></p>
         </div>
         <div class="confirm__outer">
           <p class="confirm__label">好きな音楽のカテゴリ</p>
@@ -71,7 +87,7 @@
       echo '<input type="hidden" name="subscribe-mail" id="subscribe-mail" value="' . htmlspecialchars($subscribeMail, ENT_QUOTES, 'UTF-8') . '">';
       ?>
       <div class="btn__container">
-        <a href="../index.php" class="back-btn btn">戻る</a>
+        <button type="button" onclick="history.back()" class="back-btn btn">戻る</button>
         <input type="submit" class="submit-btn btn" value="送信">
       </div>
     </form>
