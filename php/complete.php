@@ -10,7 +10,6 @@ $categories_str = isset($_SESSION['categories']) && is_array($_SESSION['categori
   ? implode(', ', $_SESSION['categories'])
   : '';
 $subscribeMail = $_SESSION['subscribe_mail'];
-// var_dump($categories_str);
 
 ?>
 <!DOCTYPE html>

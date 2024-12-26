@@ -4,13 +4,10 @@ require_once('./_funcs.php');
 $name = htmlSpChar($_POST['name']);
 $furigana = htmlSpChar($_POST['furigana']);
 $email = htmlSpChar($_POST['email']);
-$subscribeMail= isset($_POST['subscribe_mail']) && $_POST['subscribe_mail'] === 'true' 
-? 1 
-: 0;
+$subscribeMail= $_POST['subscribe_mail'] !== NULL ? 1 : 0;
 
 
 session_start();
-unset($_SESSION['subscribe-mail']); // 古い変数名
 unset($_SESSION['subscribe_mail']); // 新しい変数名もリセット（念のため）
 $_SESSION['name'] = $name;
 $_SESSION['furigana'] = $furigana;
