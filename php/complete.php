@@ -50,63 +50,59 @@ $subscribeMail = $_SESSION['subscribe_mail'];
           </div>`;
           exit('sqlError:' . $error[2]);
         } else {
-          $stmt = $pdo->prepare("SELECT * FROM userdata_table;");
-          $status = $stmt->execute();
+          // データベースに登録した内容を取得
+          $lastInsertId = $pdo->lastInsertId();
+          // 挿入したデータを取得
+          $stmt = $pdo->prepare("SELECT * FROM userdata_table WHERE id = :id");
+          $stmt->bindValue(':id', $lastInsertId, PDO::PARAM_INT);
+          $stmt->execute();
           if ($status == false) {
             //execute（SQL実行時にエラーがある場合）
             $error = $stmt->errorInfo();
             exit("ErrorQuery:" . $error[2]);
           } else {
-            //Selectデータの数だけ自動でループしてくれる
-            //FETCH_ASSOC=http://php.net/manual/ja/pdostatement.fetch.php
-            while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
-              $view .= '<p>';
-              // $view .= h($result['date']) . h($result['name']) . h($result['email']) . h($result['content']);
-              $view .= '</p>';
-            }
-          }
-        ?>
-          <div class="notation">
-            <p>以下の内容で登録しました。</p>
-          </div>
-          <div class="complete__outer">
-            <p class="complete__label">氏名</p>
-            <p class="complete__content"><?= $name ?></p>
-          </div>
-          <div class="complete__outer">
-            <p class="complete__label">フリガナ</p>
-            <p class="complete__content"><?= $furigana ?></p>
-          </div>
-          <div class="complete__outer">
-            <p class="complete__label">メール</p>
-            <p class="complete__content"><?= $email ?></p>
-          </div>
-          <div class="complete__outer">
-            <p class="complete__label">好きな音楽のカテゴリ</p>
-            <ul class="complete__content--list">
-              <?php
-              foreach ($_SESSION['categories'] as $category) {
-                echo '<li class="complete__content">' . $category . '</li>';
-              }
-              ?>
-            </ul>
-          </div>
-          <div class="complete__outer">
-            <p class="complete__label">メールで演奏会の通知を受け取る</p>
-            <p class="complete__content">
-              <?php
-              if ($subscribeMail === 1) {
-                echo "受け取る";
-              } else {
-                echo "受け取らない";
-              }
-              ?>
-            </p>
-          </div>
-        <?php
-          session_destroy();
-        }
-        ?>
+            // データを取得して表示
+            $userData = $stmt->fetch(PDO::FETCH_ASSOC);
+            if (!$userData) {
+              echo `<div class="notation">
+                      <p>データの取得に失敗しました</p>
+                    </div>`;
+              exit('データの取得に失敗しました。');
+            } else { ?>
+              <div class="notation">
+                <p>以下の内容で登録しました。</p>
+              </div>
+              <div class="complete__outer">
+                <p class="complete__label">氏名</p>
+                <p class="complete__content"><?= $userData['name'] ?></p>
+              </div>
+              <div class="complete__outer">
+                <p class="complete__label">フリガナ</p>
+                <p class="complete__content"><?= $userData['furigana'] ?></p>
+              </div>
+              <div class="complete__outer">
+                <p class="complete__label">メール</p>
+                <p class="complete__content"><?= $userData['email'] ?></p>
+              </div>
+              <div class="complete__outer">
+                <p class="complete__label">好きな音楽のカテゴリ</p>
+                <p class="complete__content"><?= $userData['music_category'] ?></p>
+              </div>
+              <div class="complete__outer">
+                <p class="complete__label">メールで演奏会の通知を受け取る</p>
+                <p class="complete__content">
+                  <?php
+                  if ($userData['subscribe_mail'] === 1) {
+                    echo "受け取る";
+                  } else {
+                    echo "受け取らない";
+                  }
+                  ?>
+                </p>
+              </div>
+            <?php } ?>
+          <?php } ?>
+        <?php session_destroy(); }?>
       </div>
     </div>
     <a href="../index.php" class="totop-btn btn">TOPへ戻る</a>
