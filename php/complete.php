@@ -7,8 +7,8 @@ $name = $_SESSION['name'];
 $furigana = $_SESSION['furigana'];
 $email = $_SESSION['email'];
 $categories_str = isset($_SESSION['categories']) && is_array($_SESSION['categories'])
-    ? implode(', ', $_SESSION['categories'])
-    : '';
+  ? implode(', ', $_SESSION['categories'])
+  : '';
 $subscribeMail = $_SESSION['subscribe_mail'];
 // var_dump($categories_str);
 
@@ -32,7 +32,7 @@ $subscribeMail = $_SESSION['subscribe_mail'];
         $pdo = connectDb();
         $stmt = $pdo->prepare("INSERT INTO userdata_table(name, furigana, email, music_category, subscribe_mail, date) VALUES(:name, :furigana, :email, :music_category, :subscribe_mail, now())");
         if (!$stmt) {
-            exit('Database connection failed');
+          exit('Database connection failed');
         }
 
         $stmt->bindValue(':name', $name, PDO::PARAM_STR);
@@ -44,44 +44,63 @@ $subscribeMail = $_SESSION['subscribe_mail'];
         $status = $stmt->execute();
         if ($status == false) {
           $error = $stmt->errorInfo();
-          var_dump($error);
           session_destroy();
+          echo `<div class="notation">
+            <p>登録に失敗しました</p>
+          </div>`;
           exit('sqlError:' . $error[2]);
         } else {
+          $stmt = $pdo->prepare("SELECT * FROM userdata_table;");
+          $status = $stmt->execute();
+          if ($status == false) {
+            //execute（SQL実行時にエラーがある場合）
+            $error = $stmt->errorInfo();
+            exit("ErrorQuery:" . $error[2]);
+          } else {
+            //Selectデータの数だけ自動でループしてくれる
+            //FETCH_ASSOC=http://php.net/manual/ja/pdostatement.fetch.php
+            while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+              $view .= '<p>';
+              // $view .= h($result['date']) . h($result['name']) . h($result['email']) . h($result['content']);
+              $view .= '</p>';
+            }
+          }
         ?>
-          <p>以下の内容で登録しました。</p>
-          <div class="confirm__outer">
-            <p class="confirm__label">氏名</p>
-            <p class="confirm__content"><?= $name ?></p>
+          <div class="notation">
+            <p>以下の内容で登録しました。</p>
           </div>
-          <div class="confirm__outer">
-            <p class="confirm__label">フリガナ</p>
-            <p class="confirm__content"><?= $furigana ?></p>
+          <div class="complete__outer">
+            <p class="complete__label">氏名</p>
+            <p class="complete__content"><?= $name ?></p>
           </div>
-          <div class="confirm__outer">
-            <p class="confirm__label">メール</p>
-            <p class="confirm__content"><?= $email ?></p>
+          <div class="complete__outer">
+            <p class="complete__label">フリガナ</p>
+            <p class="complete__content"><?= $furigana ?></p>
           </div>
-          <div class="confirm__outer">
-            <p class="confirm__label">好きな音楽のカテゴリ</p>
-            <ul class="confirm__content--list">
+          <div class="complete__outer">
+            <p class="complete__label">メール</p>
+            <p class="complete__content"><?= $email ?></p>
+          </div>
+          <div class="complete__outer">
+            <p class="complete__label">好きな音楽のカテゴリ</p>
+            <ul class="complete__content--list">
               <?php
               foreach ($_SESSION['categories'] as $category) {
-                echo '<li class="confirm__content">' . $category . '</li>';
+                echo '<li class="complete__content">' . $category . '</li>';
               }
               ?>
             </ul>
           </div>
-          <div class="confirm__outer">
-            <p class="confirm__label">メールで演奏会の通知を受け取る</p>
-            <p class="confirm__content">
-            <?php
-            if ($subscribeMail === 1) {
-              echo "受け取る";
-            } else {
-              echo "受け取らない";
-            }
-            ?>
+          <div class="complete__outer">
+            <p class="complete__label">メールで演奏会の通知を受け取る</p>
+            <p class="complete__content">
+              <?php
+              if ($subscribeMail === 1) {
+                echo "受け取る";
+              } else {
+                echo "受け取らない";
+              }
+              ?>
             </p>
           </div>
         <?php

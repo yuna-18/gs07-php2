@@ -10,8 +10,8 @@
 </head>
 
 <body id="form">
-  <h1>ユーザー登録フォーム</h1>
   <div class="form__wrapper">
+    <h1>ユーザー登録フォーム</h1>
     <form action="./confirm.php" method="post" class="form__container">
       <div class="form__contents">
         <div class="input__outer">
@@ -53,7 +53,10 @@
           </div>
         </div>
       </div>
-      <input type="submit" class="confirm-btn btn" value="確認する">
+      <div class="btn__container">
+        <a href="../index.php" class="totop-btn btn">TOPへ戻る</a>
+        <input type="submit" class="confirm-btn btn" value="確認する">
+      </div>
     </form>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="../js/index.js"></script>
