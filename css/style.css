@@ -108,7 +108,7 @@
     justify-content: center;
     align-items: center;
     height: 100%;
-    padding: 30vh 0;
+    padding: 20vh 0;
   }
   #confirm .confirm__wrapper .confirm__container .confirm__contents {
     width: 100%;
@@ -158,15 +158,19 @@
     justify-content: center;
     align-items: center;
     height: 100%;
-    padding: 30vh 0;
+    padding: 20vh 0;
   }
-  #complete .complete__container {
+  #complete .complete__wrapper {
+    display: block;
+  }
+  #complete .complete__wrapper .complete__container {
     padding: 8vw 4vw;
   }
-  #complete .complete__container .complete__contents {
+  #complete .complete__wrapper .complete__container .complete__contents {
     width: 100%;
   }
-  #complete .totop-btn {
+  #complete .complete__wrapper .totop-btn {
+    display: block;
     width: 48vw;
     height: 12vw;
     line-height: 12vw;

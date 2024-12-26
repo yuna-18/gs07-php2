@@ -4,20 +4,24 @@ require_once('./_funcs.php');
 $name = htmlSpChar($_POST['name']);
 $furigana = htmlSpChar($_POST['furigana']);
 $email = htmlSpChar($_POST['email']);
-$subscribeMail = htmlSpChar($_POST['subscribe-mail']);
+$subscribeMail= isset($_POST['subscribe_mail']) && $_POST['subscribe_mail'] === 'true' 
+? 1 
+: 0;
 
 
 session_start();
+unset($_SESSION['subscribe-mail']); // 古い変数名
+unset($_SESSION['subscribe_mail']); // 新しい変数名もリセット（念のため）
 $_SESSION['name'] = $name;
 $_SESSION['furigana'] = $furigana;
 $_SESSION['email'] = $email;
-$_SESSION['subscribe-mail'] = $subscribeMail;
+$_SESSION['subscribe_mail'] = $subscribeMail;
 
 // 複数選択　音楽カテゴリ処理
 if (isset($_POST['categories']) && is_array($_POST['categories'])) {
   // 配列内の値の処理
   $categories = array_map('htmlspecialchars', $_POST['categories']);
-  
+
   // セッションに保存
   $_SESSION['categories'] = $categories;
 
@@ -75,12 +79,10 @@ if (isset($_POST['categories']) && is_array($_POST['categories'])) {
           <p class="confirm__label">メールで演奏会の通知を受け取る</p>
           <p class="confirm__content">
             <?php
-            if (!empty($_SESSION['subscribe-mail'])) {
-              echo $_SESSION['subscribe-mail'];
-              $subscribeMail = "受け取る";
+            if ($subscribeMail === 1) {
+              echo "受け取る";
             } else {
               echo "受け取らない";
-              $subscribeMail = "受け取らない";
             }
             ?>
           </p>
@@ -97,7 +99,7 @@ if (isset($_POST['categories']) && is_array($_POST['categories'])) {
           echo '<input type="hidden" name="categories[]" value="' . $category . '">';
         }
       }
-      echo '<input type="hidden" name="subscribe-mail" id="subscribe-mail" value="' . $subscribeMail . '">';
+      echo '<input type="hidden" name="subscribe_mail" id="subscribe_mail" value="' . $subscribeMail . '">';
       ?>
       <div class="btn__container">
         <button type="button" onclick="history.back()" class="back-btn btn">戻る</button>

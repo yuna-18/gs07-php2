@@ -49,7 +49,7 @@
         <div class="input__outer">
           <p class="question">メールで演奏会の通知を受け取れます。</p>
           <div class="input-check__item">
-            <label for="subscribe-mail"><input type="checkbox" name="subscribe-mail" id="subscribe-mail" value="受け取る">受け取る</label>
+            <label for="subscribe_mail"><input type="checkbox" name="subscribe_mail" id="subscribe_mail" value="受け取る">受け取る</label>
           </div>
         </div>
       </div>

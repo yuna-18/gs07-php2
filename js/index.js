@@ -37,7 +37,7 @@
 //         delete inputCheckObj.category5;
 //       }
 //       break;
-//     case 'subscribe-mail':
+//     case 'subscribe_mail':
 //       if ($(this).is(':checked')) {
 //         inputCheckObj.subscribeMail = $(this).val();
 //       } else {
